@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>重庆打黑</title>
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+</head>
+<body>
+<h2 id="t">薄熙来</h2>
+<h3 id="t2">guagua</h3>
+<h3 id="t3">牛逼</h3>
+<script type="text/javascript">
+    $(document).ready(function() {
+    	namespace = '/test_conn';
+        var socket = io.connect('http://' + document.domain + ':' + location.port+namespace);
+
+        socket.on('connect',function(){
+    		console.log("boxilai is connected!");
+            socket.emit('message',{'param':'————————————————————打黑除恶——————————————————'});
+    		
+            
+        });
+    	
+    	
+
+        socket.on('server_response',function(res){
+            console.log("gua");
+
+            
+            
+            $("#t2").text(res.data);
+        });
+
+        socket.on('cow_data',function(data){
+            console.log(data);
+
+            
+
+                    
+            $("#t3").text(data.hour_temp);
+        });
+    	
+ 
+    });
+</script>
+</body>
+</html>
+
