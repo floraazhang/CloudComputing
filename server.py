@@ -13,7 +13,7 @@ import random
 from flask_cors import CORS
 
 import sys
-sys.path.append("database/")
+sys.path.append("db/")
 import db
 
 
