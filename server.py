@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+ #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
 
@@ -65,7 +65,7 @@ def test_emit(message):
         if i==5:
             i=0
 
-        socketio.emit('cow_data', data[i:5], namespace='/test_conn')
+        socketio.emit('cow_data', data, namespace='/test_conn')
         
 
     
