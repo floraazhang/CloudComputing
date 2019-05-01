@@ -80,7 +80,7 @@ def ack():
 @app.route("/")
 def api_index():
 
-    return send_from_directory('./','tables-data-new.html')
+    return send_from_directory('./','Cow_data.html')
 
 
 
