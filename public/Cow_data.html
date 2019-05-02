@@ -126,7 +126,6 @@
     <!-- Left Panel -->
 
     <!-- Right Panel -->
-    <h3 id="t2">guagua</h3>
     
 
     <div id="right-panel" class="right-panel">
@@ -309,7 +308,6 @@
 
     
     <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
-    <script src="vendors/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
     <script src="static/vendors/popper.js/dist/umd/popper.min.js"></script>
     <script src="static/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -329,75 +327,71 @@
     <script src="static/assets/js/init-scripts/data-table/datatables-init.js"></script>
 
     <script type="text/javascript">
+        var callback = function(){
+            namespace = '/test_conn';
+            var socket = io.connect('http://' + document.domain + ':' + location.port+namespace);
+
+            socket.on('connect',function(){
+                console.log("boxilai is connected!");
+                socket.emit('message',{'param':'————————————————————打黑除恶——————————————————'});
+                
+                
+            });
+
+            socket.on('cow_data',function(data){
+
+                console.log(data);
+                var table=document.getElementById("bootstrap-data-table-export")
+
+                for(var i = table.rows.length-1; i >= 0; i--)
+                {
+                    table.deleteRow(i);
+                }
+
+                var thead = document.createElement('thead');
+                var tr = document.createElement('tr');
+                var tbody =document.createElement('tbody');
+
+                if (data !== null && data[0] !== null) {
+                    Object.keys(data[0]).forEach((key)=>{
+                        var th = document.createElement('th');
+                        var textnode=document.createTextNode(key);
+                        th.appendChild(textnode);
+                        tr.appendChild(th);
+
+
+                    })
+
+                    thead.appendChild(tr);      
+
+                    data.forEach((cow) => {
+                        var tr=document.createElement('tr');
+
+                        Object.values(cow).forEach((ele) => {
+                            var td = document.createElement('td');
+                            var textnode = document.createTextNode(ele);
+                            td.appendChild(textnode);
+                            tr.appendChild(td);
+                        });
+                        tbody.appendChild(tr);
+                    });                
+                }
+
+                table.appendChild(thead);
+                table.appendChild(tbody);
+                        
+            });
+        };
+
+        if (
+            document.readyState === "complete" ||
+            (document.readyState !== "loading" && !document.documentElement.doScroll)
+        ) {
+        callback();
+        } else {
+        document.addEventListener("DOMContentLoaded", callback);
+        }
     $(document).ready(function() {
-        namespace = '/test_conn';
-        var socket = io.connect('http://' + document.domain + ':' + location.port+namespace);
-
-        socket.on('connect',function(){
-            console.log("boxilai is connected!");
-            socket.emit('message',{'param':'————————————————————打黑除恶——————————————————'});
-            
-            
-        });
-        
-        socket.on('server_response',function(res){
-            console.log("gua");
-
-            
-            
-            $("#t2").text(res.data);
-        });
-
-        socket.on('cow_data',function(data){
-
-            console.log(data);
-            var table=document.getElementById("bootstrap-data-table-export")
-
-            for(var i = table.rows.length-1; i >= 0; i--)
-            {
-            table. deleteRow(i);
-            }
-
-            var thead = document.createElement('thead');
-            var tr = document.createElement('tr');
-            
-            var tbody =document.createElement('tbody');
-
-
-
-
-            if (data !== null && data[0] !== null) {
-                Object.keys(data[0]).forEach((key)=>{
-                    var th = document.createElement('th');
-                    var textnode=document.createTextNode(key);
-                    th.appendChild(textnode);
-                    tr.appendChild(th);
-
-
-                })
-
-                thead.appendChild(tr);      
-
-                data.forEach((cow) => {
-                    var tr=document.createElement('tr');
-
-                    Object.values(cow).forEach((ele) => {
-                        var td = document.createElement('td');
-                        var textnode = document.createTextNode(ele);
-                        td.appendChild(textnode);
-                        tr.appendChild(td);
-                    });
-                    tbody.appendChild(tr);
-                });                
-            }
-
-            table.appendChild(thead);
-            table.appendChild(tbody);
-
-
-                    
-            
-        });
         
     });
 </script>

@@ -24,7 +24,16 @@ app = Flask(__name__)
 CORS(app)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
- 
+
+#Serve Static Index page
+@app.route('/')
+def api_index():
+    return send_from_directory('public', 'Cow_data.html')
+
+#Serve Other Static Pages
+@app.route('/<string:page_name>/')
+def render_static(page_name):
+    return send_from_directory('public', page_name)
 
 @socketio.on('connect', namespace='/chat')
 def test_connect():
@@ -47,19 +56,9 @@ def test_emit(message):
         socketio.emit('cow_data', data, namespace='/test_conn')
         
 
-    
-    
-
-
- 
 def ack():
     print("message received!")
 
-
-@app.route("/")
-def api_index():
-
-    return send_from_directory('./','Cow_data.html')
 
 
 
