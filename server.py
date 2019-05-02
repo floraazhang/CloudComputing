@@ -31,9 +31,9 @@ def api_index():
     return send_from_directory('public', 'Cow_data.html')
 
 #Serve Other Static Pages
-@app.route('/<string:page_name>/')
+@app.route('/public/<path:path>')
 def render_static(page_name):
-    return send_from_directory('public', page_name)
+    return send_from_directory('public', path)
 
 @socketio.on('connect', namespace='/chat')
 def test_connect():
@@ -48,12 +48,9 @@ def test_emit(message):
 
         data=db.getdata()
         
-        socketio.sleep(3)
-        i+=1
-        if i==5:
-            i=0
-
         socketio.emit('cow_data', data, namespace='/test_conn')
+
+        socketio.sleep(3)
         
 
 def ack():
