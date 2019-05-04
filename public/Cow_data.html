@@ -358,8 +358,6 @@
                         var textnode=document.createTextNode(key);
                         th.appendChild(textnode);
                         tr.appendChild(th);
-
-
                     })
 
                     thead.appendChild(tr);      
@@ -370,6 +368,10 @@
                         Object.values(cow).forEach((ele) => {
                             var td = document.createElement('td');
                             var textnode = document.createTextNode(ele);
+                            if (parseFloat(cow['probability']) > 0.5) {
+                                console.log('change')
+                                td.classList.add('estrus-active');
+                            }
                             td.appendChild(textnode);
                             tr.appendChild(td);
                         });

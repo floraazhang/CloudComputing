@@ -2250,6 +2250,10 @@ header .form-inline {
   background: #EAEAEA;
   box-shadow: none; }
 
+.estrus-active{
+  text-shadow: 2px 2px 5px red;
+}
+
 .stat-widget-nine .all-like {
   float: right; }
 
