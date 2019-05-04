@@ -130,7 +130,7 @@ def ack():
 
 
 @app.route('/search')
-@flask_login.login_required
+# @flask_login.login_required
 def search():
     return render_template('search.html')
 
