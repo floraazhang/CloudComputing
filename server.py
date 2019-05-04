@@ -30,6 +30,29 @@ socketio = SocketIO(app)
 def api_index():
     return send_from_directory('public', 'Cow_data.html')
 
+
+@app.route('/search_cow',methods=['GET'])
+def Search_cow():
+
+    
+
+    cowID=request.args.get('ID')
+
+    
+
+    
+
+    data=db.search_cow_byID(int(cowID))
+
+
+    return Response(json.dumps(data), mimetype='application/json')
+
+
+
+    
+
+
+
 #Serve Other Static Pages
 @app.route('/public/<path:path>')
 def render_static(page_name):
