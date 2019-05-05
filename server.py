@@ -129,8 +129,8 @@ def ack():
 
 
 
-@app.route('/search')
-@flask_login.login_required
+@app.route('/search', methods=['GET', 'POST'])
+# @flask_login.login_required
 def search():
     return render_template('search.html')
 
