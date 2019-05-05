@@ -105,12 +105,6 @@
                         </a>
 
                         <div class="user-menu dropdown-menu">
-                            <!-- <a class="nav-link" href="#"><i class="fa fa-user"></i> My Profile</a>
-
-                            <a class="nav-link" href="#"><i class="fa fa-user"></i> Notifications <span class="count">13</span></a>
-
-                            <a class="nav-link" href="#"><i class="fa fa-cog"></i> Settings</a> -->
-
                             <a class="nav-link" href="/login"><i class="fa fa-power-off"></i> Logout</a>
                         </div>
                     </div>
@@ -123,23 +117,20 @@
 
         <div class="content mt-3">
             <div class="animated fadeIn">
-
-                <div class="row" style="margin-top:10%">
-                    <div class="col-lg-3"></div>
-                    <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-lg-12">
                         <div class="card">
                             <div class="card-header">
                                 <strong class="card-title">Search by Cow ID</strong>
                             </div>
                             <div class="card-body">
-                                <form id="ajax-search" method="post" action="mailer.php">
-                                    <div class="form-group">
-                                        <label for="cc-payment" class="control-label mb-1">Cow ID</label>
-                                        <input id="ID" name="cc-payment" type="text" class="form-control" aria-required="true" aria-invalid="false" value="88" required>
+                                <form id="ajax-search" method="post">
+                                    <div class="form-group col-lg-8">
+                                        <input id="ID" name="cc-payment" type="text" class="form-control" aria-required="true" aria-invalid="false" value="88" required style='height:50px'>
                                     </div>
                                     
 
-                                    <div>
+                                    <div class="col-lg-4">
                                         <button id="payment-button" type="submit" class="btn btn-lg btn-info btn-block">
                                             <span id="payment-button-amount">Search</span>
                                             <span id="payment-button-sending" style="display:none;">Sending…</span>
@@ -148,7 +139,58 @@
                                 </form>
                             </div>
                         </div> <!-- .card -->
-                        <div id="form-messages">(search result)</div>
+                    </div>
+                    <!--/.col-->
+                </div>
+            </div><!-- .animated -->
+        </div><!-- .content -->
+
+
+        <div class="content mt-3">
+            <div class="animated fadeIn">
+                <div class="row">
+
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <strong class="card-title">Search Result</strong>
+                            </div>
+                            <div class="card-body">
+                                <table id="bootstrap-data-table-export" class="table table-striped table-bordered">
+                                    
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div><!-- .animated -->
+        </div><!-- .content -->
+
+        <div class="content mt-3" id='label_box'>
+            <div class="animated fadeIn">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <strong class="card-title">Update Label</strong>
+                            </div>
+                            <div class="card-body">
+                                <form id="update_label" method="post">
+                                    <div class="form-group col-lg-8">
+                                        <input id="new_label" name="cc-payment" type="text" class="form-control" aria-required="true" aria-invalid="false" value="0" required style='height:50px'>
+                                    </div>
+                                    
+
+                                    <div class="col-lg-4">
+                                        <button type="submit" class="btn btn-lg btn-info btn-block">
+                                            <span>Update</span>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div> <!-- .card -->
                     </div>
                     <!--/.col-->
                 </div>
@@ -162,53 +204,113 @@
     <script src="static/vendors/popper.js/dist/umd/popper.min.js"></script>
 
     <script src="static/vendors/jquery-validation/dist/jquery.validate.min.js"></script>
-    <script src="static/vendors/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
 
     <script src="static/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="static/assets/js/main.js"></script>
 
-    <script>
-        $(function() {
-            // Get the form.
-            var form = $('#ajax-search');
+    <script type="text/javascript">
 
-            // Get the messages div.
-            var formMessages = $('div#form-messages');
+        $(document).ready(function() {
+
+        });
+
+        var form = $('#ajax-search');
+        var box = $('#label_box');
+
+        $(box).hide();
+        
+        $(form).submit(function(){
+            
+            $(box).show();
+
+            console.log('111111111111111111111111111111111')
+            var formData = $(form).serialize();
+
+            // Submit the form using AJAX.
+            $.ajax({
+                type: 'POST',
+                url: '/search',
+                data: formData,
+                success:function(result){
+                    if(result!=null){
+
+                        var table = document.getElementById("bootstrap-data-table-export")
+                        
+                        for(var i = table.rows.length-1; i >= 0; i--){
+                            table.deleteRow(i);
+                        }
+
+                        var thead = document.createElement('thead');
+                        var tr = document.createElement('tr');
+                        var tbody =document.createElement('tbody');
+
+                        if (result !== null && result[0] !== null) {
+                            Object.keys(result[0]).forEach((key)=>{
+                                var th = document.createElement('th');
+                                var textnode=document.createTextNode(key);
+                                th.appendChild(textnode);
+                                tr.appendChild(th);
+
+
+                            })
+
+                            thead.appendChild(tr);      
+
+                            result.forEach((cow) => {
+                                var tr=document.createElement('tr');
+
+                                Object.values(cow).forEach((ele) => {
+                                    var td = document.createElement('td');
+                                    var num = Math.round(ele * 10000) / 10000
+                                    var textnode = document.createTextNode(num);
+                                    td.appendChild(textnode);
+                                    tr.appendChild(td);
+                                });
+
+                                if(cow.probability>0.5){
+                                    $(tr).css("background-color","red");
+                                }
+
+                                tbody.appendChild(tr);
+                            });                
+                        }
+
+                        table.appendChild(thead);
+                        table.appendChild(tbody);
+
+                        var box = $('#label_box');
+                        box.style.display = 'block';
+                    }
+                }
+            })
+            console.log('333333333333333333333333')
+        });
+
+        var form2 = document.getElementById('update_label');
+        jQuery(form2).submit(function($){
+            // Get the form.
+            var form2 = document.getElementById('update_label');
 
             // Set up an event listener for the contact form.
-            $(form).submit(function(event) {
-                // Stop the browser from submitting the form.
-                event.preventDefault();
+            $(form2).submit(function(event) {
 
                 // Serialize the form data.
-                var formData = $(form).serialize();
+                var formData = $(form2).serialize();
 
                 // Submit the form using AJAX.
                 $.ajax({
                     type: 'POST',
-                    url: $(form).attr('action'),
+                    url: '/search',
                     data: formData
-                    success:function(result){
-                        if(result!=null){
-
-                            for (i in result){
-                                var newDivNode = $("<div>").attr("id",i);
-                                var record = result[i];
-                            }
-
-                            newDivNode.html(record.name+' ('+type+')').appendTo(formMessages);
-
-                            newDivNode.prepend('<div id="new_div"></div>');
-                            $("#new_div").html(record.id)
-                            $("#new_div").hide()
-                        }
-                    });
                 })
             });
         });
+        
 
     </script>
 
 
 </body>
+
 </html>
