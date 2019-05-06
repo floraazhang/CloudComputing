@@ -34,20 +34,6 @@ socketio = SocketIO(app)
 
 # users = {'foo@bar.tld': {'password': 'secret'}}
 
-
-
-
-def set_interval(func, sec): 
-    def func_wrapper(): 
-        set_interval(func, sec)  
-        func()  
-    t = threading.Timer(sec, func_wrapper) 
-    t.start() 
-    return t
-
-
-
-
 # @login_manager.unauthorized_handler
 # def unauthorized_handler():
 #     return render_template('login.html') 
@@ -80,9 +66,23 @@ def set_interval(func, sec):
 #     return user
 
 
+def set_interval(func, sec): 
+    def func_wrapper(): 
+        set_interval(func, sec)  
+        func()  
+    t = threading.Timer(sec, func_wrapper) 
+    t.start() 
+    return t
 
+def senddata():
+    data=db.getdata()   
+    socketio.emit('cow_data', data)
 
-
+@socketio.on('message')
+def test_emit(message):
+    print(message)
+    senddata()
+    set_interval(senddata, 10)
 
 #Serve Static Index page
 @app.route('/')
@@ -92,24 +92,10 @@ def api_index():
 
 @app.route('/search_cow',methods=['GET'])
 def Search_cow():
-
-    
-
     cowID=request.args.get('ID')
-
-    
-
-    
-
+    print(cowID)
     data=db.search_cow_byID(int(cowID))
-
-
     return Response(json.dumps(data), mimetype='application/json')
-
-
-
-    
-
 
 
 #Serve Other Static Pages
@@ -117,28 +103,7 @@ def Search_cow():
 def render_static(page_name):
     return send_from_directory('public', path)
 
- 
-
-
-def senddata():
-    data=db.getdata()
         
-    socketio.emit('cow_data', data)
-
-
-
-@socketio.on('message')
-def test_emit(message):
-    print(message)
-    
-
-    set_interval(senddata, 10)
-
-        
-
-
-
-
 
 @app.route('/search', methods=['GET', 'POST'])
 # @flask_login.login_required

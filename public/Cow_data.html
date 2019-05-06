@@ -170,12 +170,10 @@
         var socket = io.connect('http://' + document.domain + ':' + location.port);
 
         var callback = function(){
-            
-            
 
             socket.on('connect',function(){
                 console.log("boxilai is connected!");
-                socket.emit('message',{'param':'————————————————————打黑除恶——————————————————'});
+                socket.emit('message',{'param': 'front-end connected'});
             });
 
             socket.on('cow_data',function(data){

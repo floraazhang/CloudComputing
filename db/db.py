@@ -15,8 +15,6 @@ def getdata():
     # Create a database
     db = list(client.QueryDatabases("select * from c where c.id='estruscosmosdb'"))
 
-
-
     # Create container options
     options = {
         'offerThroughput': 400
@@ -29,26 +27,6 @@ def getdata():
     # Create a container
     #container = client.CreateContainer(db['_self'], container_definition, options)
     container=list(client.QueryContainers(db[0]['_self'],"select * from c where c.id='EstrusStatus'",options))
-
-
-    # Create and add some items to the container
-    # item1 = client.CreateItem(container['_self'], {
-    #     'id': 'server1',
-    #     'Web Site': 0,
-    #     'Cloud Service': 0,
-    #     'Virtual Machine': 0,
-    #     'message': 'Hello World from Server 1!'
-    #     }
-    # )
-
-    # item2 = client.CreateItem(container['_self'], {
-    #     'id': 'server2',
-    #     'Web Site': 1,
-    #     'Cloud Service': 0,
-    #     'Virtual Machine': 0,
-    #     'message': 'Hello World from Server 2!'
-    #     }
-    # )
 
     # Query these items in SQL
     query = {'query': "SELECT * FROM c"}
@@ -79,7 +57,7 @@ def search_cow_byID(ID):
         'ENDPOINT': 'https://estruscosmosdb.documents.azure.com:443/',
         'PRIMARYKEY': 'R2M6nKvkUKf4vYohKEr2hph74zDMVD9i4mQT2wTyKSE8kYdZ3NAHNlth1Fz0BZ1vaYnCgamLRnYhOZ5B33A8nQ==',
         'DATABASE': 'estruscosmosdb',
-        'CONTAINER': 'EstrusStatus'
+        'CONTAINER': 'RawDataCollection'
     }
 
     # Initialize the Cosmos client
@@ -88,8 +66,6 @@ def search_cow_byID(ID):
 
     # Create a database
     db = list(client.QueryDatabases("select * from c where c.id='estruscosmosdb'"))
-
-
 
     # Create container options
     options = {
@@ -102,9 +78,9 @@ def search_cow_byID(ID):
 
     # Create a container
     #container = client.CreateContainer(db['_self'], container_definition, options)
-    container=list(client.QueryContainers(db[0]['_self'],"select * from c where c.id='EstrusStatus'",options))
+    container=list(client.QueryContainers(db[0]['_self'],"select * from c where c.id='RawDataCollection'",options))
 
-    query = {'query': "SELECT * FROM c where c.cowId='%d'"%ID} 
+    query = {'query': "SELECT * FROM c where c.cowId='%d'" % ID} 
 
     options = {}
     options['enableCrossPartitionQuery'] = True
@@ -115,13 +91,14 @@ def search_cow_byID(ID):
     for item in iter(result_iterable):
         row={}
         row['cowId']=item['cowId']
-        row['probability']=item['probability']
-        row['label']=item['estrusLabel']
         row['hour_temp']=item['hour_stomach_temp_celcius']
         row['activity']=item['hour_animal_activity']
         row['hour_low_pass_over_activity']=item['hour_low_pass_over_activity']
         row['hour_temp_without_drink_cycles']=item['hour_temp_without_drink_cycles']
+        row['label']=item['label']
+        row['timestamp']=item['timestamp']
+        row['documentID']=item['id']
         data.append(row)
 
 
-    return data[0]
+    return data
