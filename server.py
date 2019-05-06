@@ -26,7 +26,6 @@ socketio = SocketIO(app)
 
 
 
-
 # # login
 # import flask_login as flask_login
 # login_manager = flask_login.LoginManager()
@@ -75,27 +74,44 @@ def set_interval(func, sec):
     return t
 
 def senddata():
+    print("sending data")
     data=db.getdata()   
     socketio.emit('cow_data', data)
 
+timer = None
 @socketio.on('message')
 def test_emit(message):
-    print(message)
     senddata()
-    set_interval(senddata, 10)
+    timer = set_interval(senddata, 5)
+
+@socketio.on('connect', namespace='/chat')
+def test_connect():
+    print('Client connected')
+
+@socketio.on('disconnect')
+def test_disconnect():
+    if timer is not None:
+        timer.cancel()
+    print('disconnected')
 
 #Serve Static Index page
 @app.route('/')
 def api_index():
     return send_from_directory('public', 'Cow_data.html')
 
-
 @app.route('/search_cow',methods=['GET'])
-def Search_cow():
+def searchCow():
     cowID=request.args.get('ID')
     print(cowID)
     data=db.search_cow_byID(int(cowID))
     return Response(json.dumps(data), mimetype='application/json')
+
+@app.route('/update_model',methods=['POST'])
+def updateModel():
+    parameters = request.json
+    msg = db.updateMLModel(parameters)
+    # data=db.search_cow_byID(int(cowID))
+    return Response(msg)
 
 
 #Serve Other Static Pages
@@ -107,8 +123,18 @@ def render_static(page_name):
 
 @app.route('/search', methods=['GET', 'POST'])
 # @flask_login.login_required
-def search():
+def searchPage():
     return render_template('search.html')
+
+@app.route('/chart', methods=['GET', 'POST'])
+# @flask_login.login_required
+def chartPage():
+    return render_template('chart.html')
+
+@app.route('/update', methods=['GET', 'POST'])
+# @flask_login.login_required
+def updatePage():
+    return render_template('update.html')
 
 # @app.route('/login', methods=['GET', 'POST'])
 # def login():

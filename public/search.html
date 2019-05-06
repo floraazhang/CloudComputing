@@ -53,6 +53,14 @@
                     <li>
                         <a href="/search"> <i class="menu-icon fa fa-search"></i>Search </a>
                     </li>
+
+                    <li>
+                        <a href="/chart"> <i class="menu-icon fa fa-bar-chart"></i>Chart </a>
+                    </li>
+
+                    <li>
+                        <a href="/update"> <i class="menu-icon fa fa-cloud-upload"></i>Update ML Model</a>
+                    </li>
                     
                 </ul>
             </div><!-- /.navbar-collapse -->
@@ -238,25 +246,27 @@
                         var tbody =document.createElement('tbody');
 
                         if (result !== null && result[0] !== null) {
-                            Object.keys(result[0]).forEach((key)=>{
+                            for (var i = 0; i < Object.keys(result[0]).length - 1; i++) {
                                 var th = document.createElement('th');
-                                var textnode=document.createTextNode(key);
+                                var textnode=document.createTextNode(Object.keys(result[0])[i]);
                                 th.appendChild(textnode);
                                 tr.appendChild(th);
-                            })
+                            }
 
                             thead.appendChild(tr);      
 
                             result.forEach((cow) => {
                                 var tr=document.createElement('tr');
-
-                                Object.values(cow).forEach((ele) => {
+                                for (var i = 0; i < Object.values(cow).length - 1; i++) {
+                                    var ele = Object.values(cow)[i];
                                     var td = document.createElement('td');
-                                    var num = Math.round(ele * 10000) / 10000
-                                    var textnode = document.createTextNode(num);
+                                    if (i != Object.values(cow).length - 2) {
+                                        ele = Math.round(ele * 10000) / 10000
+                                    }
+                                    var textnode = document.createTextNode(ele);
                                     td.appendChild(textnode);
                                     tr.appendChild(td);
-                                });
+                                }
 
                                 if(cow.probability>0.5){
                                     $(tr).css("background-color","red");
@@ -272,63 +282,7 @@
                         $(box).hide();
                     }
             });
-            
-            // // Submit the form using AJAX.
-            // $.ajax({
-            //     type: 'GET',
-            //     url: '/search_cow',
-            //     data: formData,
-            //     success:function(result){
-            //         if(result!=null){
 
-            //             var table = document.getElementById("bootstrap-data-table-export")
-                        
-            //             for(var i = table.rows.length-1; i >= 0; i--){
-            //                 table.deleteRow(i);
-            //             }
-
-            //             var thead = document.createElement('thead');
-            //             var tr = document.createElement('tr');
-            //             var tbody =document.createElement('tbody');
-
-            //             if (result !== null && result[0] !== null) {
-            //                 Object.keys(result[0]).forEach((key)=>{
-            //                     var th = document.createElement('th');
-            //                     var textnode=document.createTextNode(key);
-            //                     th.appendChild(textnode);
-            //                     tr.appendChild(th);
-
-
-            //                 })
-
-            //                 thead.appendChild(tr);      
-
-            //                 result.forEach((cow) => {
-            //                     var tr=document.createElement('tr');
-
-            //                     Object.values(cow).forEach((ele) => {
-            //                         var td = document.createElement('td');
-            //                         var num = Math.round(ele * 10000) / 10000
-            //                         var textnode = document.createTextNode(num);
-            //                         td.appendChild(textnode);
-            //                         tr.appendChild(td);
-            //                     });
-
-            //                     if(cow.probability>0.5){
-            //                         $(tr).css("background-color","red");
-            //                     }
-
-            //                     tbody.appendChild(tr);
-            //                 });                
-            //             }
-
-            //             table.appendChild(thead);
-            //             table.appendChild(tbody);
-
-            //             $(box).hide();
-            //         }
-            //     }
-            // });
             console.log('333333333333333333333333')
         });
 

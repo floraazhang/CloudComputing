@@ -97,8 +97,102 @@ def search_cow_byID(ID):
         row['hour_temp_without_drink_cycles']=item['hour_temp_without_drink_cycles']
         row['label']=item['label']
         row['timestamp']=item['timestamp']
-        row['documentID']=item['id']
+        row['documentID']=item['_rid']
         data.append(row)
 
 
     return data
+
+def GetDatabaseLink(self, database, is_name_based=True):
+    if is_name_based:
+        return 'dbs/' + database['id']
+    else:
+        return database['_self']
+
+def GetDocumentCollectionLink(self, database, document_collection, is_name_based=True):
+        if is_name_based:
+            return self.GetDatabaseLink(database) + '/colls/' + document_collection['id']
+        else:
+            return document_collection['_self']
+
+def GetDocumentLink(database, document_collection, id, is_name_based=True):
+    if is_name_based:
+        return 'dbs/' + database + '/colls/' + document_collection + '/docs/' + str(id)
+    else:
+        return id
+
+def updateMLModel(parameters):
+    config = {
+        'ENDPOINT': 'https://estruscosmosdb.documents.azure.com:443/',
+        'PRIMARYKEY': 'R2M6nKvkUKf4vYohKEr2hph74zDMVD9i4mQT2wTyKSE8kYdZ3NAHNlth1Fz0BZ1vaYnCgamLRnYhOZ5B33A8nQ==',
+        'DATABASE': 'estruscosmosdb',
+        'CONTAINER': 'MachineLearningModel'
+    }
+
+    # Initialize the Cosmos client
+    client = cosmos_client.CosmosClient(url_connection=config['ENDPOINT'], auth={
+                                        'masterKey': config['PRIMARYKEY']})
+
+    # Create a database
+    db = list(client.QueryDatabases("select * from c where c.id='estruscosmosdb'"))
+
+    # Create container options
+    options = {
+        'offerThroughput': 400
+    }
+
+    container_definition = {
+        'id': config['CONTAINER']
+    }
+
+    # Create a container
+    #container = client.CreateContainer(db['_self'], container_definition, options)
+    container=list(client.QueryContainers(db[0]['_self'],"select * from c where c.id='MachineLearningModel'",options))
+    print(container[0]['_self'])
+    options = {}
+    options['enableCrossPartitionQuery'] = True
+    options['maxItemCount'] = 2
+    
+    documentLink = "dbs/5tsxAA==/colls/5tsxAI8VKaU=/docs/5tsxAI8VKaUBAAAAAAAAAA=="
+    replace_document = {}
+    replace_document['id'] = '1'
+    replace_document['stemp_C'] = parameters['stemp_C']
+    replace_document['animal_activity_C'] = parameters['animal_activity_C']
+    replace_document['low_pass_over_activity_C'] = parameters['low_pass_over_activity_C']
+    replace_document['temp_without_drink_cycles_C'] = parameters['temp_without_drink_cycles_C']
+
+    replaced_document = client.ReplaceItem(documentLink, replace_document)
+    print("Machine Learning Model Updated")
+    return "Machine Learning Model Updated"
+
+def updateLabelByRids(Rids):
+    config = {
+        'ENDPOINT': 'https://estruscosmosdb.documents.azure.com:443/',
+        'PRIMARYKEY': 'R2M6nKvkUKf4vYohKEr2hph74zDMVD9i4mQT2wTyKSE8kYdZ3NAHNlth1Fz0BZ1vaYnCgamLRnYhOZ5B33A8nQ==',
+        'DATABASE': 'estruscosmosdb',
+        'CONTAINER': 'RawDataCollection'
+    }
+
+    # Initialize the Cosmos client
+    client = cosmos_client.CosmosClient(url_connection=config['ENDPOINT'], auth={
+                                        'masterKey': config['PRIMARYKEY']})
+
+    # Create a database
+    db = list(client.QueryDatabases("select * from c where c.id='estruscosmosdb'"))
+
+    # Create container options
+    options = {
+        'offerThroughput': 400
+    }
+
+    container_definition = {
+        'id': config['CONTAINER']
+    }
+
+    # Create a container
+    #container = client.CreateContainer(db['_self'], container_definition, options)
+    container=list(client.QueryContainers(db[0]['_self'],"select * from c where c.id='RawDataCollection'",options))
+
+    collectionLink = "dbs/5tsxAA==/colls/5tsxAINrOBA=/docs/"
+    replaced_document = client.ReplaceItem(documentLink, replace_document)
+    

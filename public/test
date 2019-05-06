@@ -18,3 +18,8 @@
     <script src="static/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
     <script src="static/vendors/datatables.net-buttons/js/buttons.colVis.min.js"></script>
     <script src="static/assets/js/init-scripts/data-table/datatables-init.js"></script>
+
+    "stemp_C": -0.02142253,
+    "animal_activity_C": 0.00063988,
+    "low_pass_over_activity_C": -0.0050179,
+    "temp_without_drink_cycles_C": -0.07119621,
