@@ -167,10 +167,11 @@
     <script type="text/javascript">
 
         var $ =jQuery.noConflict();
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
 
         var callback = function(){
-            namespace = '/test_conn';
-            var socket = io.connect('http://' + document.domain + ':' + location.port+namespace);
+            
+            
 
             socket.on('connect',function(){
                 console.log("boxilai is connected!");

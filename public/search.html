@@ -212,9 +212,6 @@
     <script type="text/javascript">
 
         $(document).ready(function() {
-
-        });
-
         var form = $('#ajax-search');
         var box = $('#label_box');
 
@@ -279,8 +276,7 @@
                         table.appendChild(thead);
                         table.appendChild(tbody);
 
-                        var box = $('#label_box');
-                        box.style.display = 'block';
+                        $(box).hide();
                     }
                 }
             })
@@ -306,6 +302,10 @@
                 })
             });
         });
+        
+
+        });
+
         
 
     </script>
