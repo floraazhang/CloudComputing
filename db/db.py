@@ -97,7 +97,8 @@ def search_cow_byID(ID):
         row['hour_temp_without_drink_cycles']=item['hour_temp_without_drink_cycles']
         row['label']=item['label']
         row['timestamp']=item['timestamp']
-        row['documentID']=item['_rid']
+        row['recordID']=item['_rid']
+        row['documentID']=item['id']
         data.append(row)
 
 
@@ -165,7 +166,7 @@ def updateMLModel(parameters):
     print("Machine Learning Model Updated")
     return "Machine Learning Model Updated"
 
-def updateLabelByRids(Rids):
+def updateLabelByRids(identifiers):
     config = {
         'ENDPOINT': 'https://estruscosmosdb.documents.azure.com:443/',
         'PRIMARYKEY': 'R2M6nKvkUKf4vYohKEr2hph74zDMVD9i4mQT2wTyKSE8kYdZ3NAHNlth1Fz0BZ1vaYnCgamLRnYhOZ5B33A8nQ==',
@@ -177,22 +178,32 @@ def updateLabelByRids(Rids):
     client = cosmos_client.CosmosClient(url_connection=config['ENDPOINT'], auth={
                                         'masterKey': config['PRIMARYKEY']})
 
-    # Create a database
-    db = list(client.QueryDatabases("select * from c where c.id='estruscosmosdb'"))
+    # # Create a database
+    # db = list(client.QueryDatabases("select * from c where c.id='estruscosmosdb'"))
 
-    # Create container options
-    options = {
-        'offerThroughput': 400
-    }
+    # # Create container options
+    # options = {
+    #     'offerThroughput': 400
+    # }
 
-    container_definition = {
-        'id': config['CONTAINER']
-    }
+    # container_definition = {
+    #     'id': config['CONTAINER']
+    # }
 
     # Create a container
     #container = client.CreateContainer(db['_self'], container_definition, options)
-    container=list(client.QueryContainers(db[0]['_self'],"select * from c where c.id='RawDataCollection'",options))
+    # container=list(client.QueryContainers(db[0]['_self'],"select * from c where c.id='RawDataCollection'",options))
 
     collectionLink = "dbs/5tsxAA==/colls/5tsxAINrOBA=/docs/"
-    replaced_document = client.ReplaceItem(documentLink, replace_document)
+    for identifier in identifiers:
+        print(identifier)
+        options = { 'partitionKey': identifier['id'] }
+        documentLink = 'dbs/5tsxAA==/colls/5tsxAI8VKaU=/docs/' + identifier['rid']
+        print(documentLink)
+        targetItem = client.ReadItem(documentLink, options)
+        targetItem['label'] = 0 if targetItem['label'] == 1 else 1
+        updated_Item = client.ReplaceItem(documentLink, targetItem)
+    
+    print("Data Labels Updated")
+    return "Selected Data Relabeled"
     

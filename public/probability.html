@@ -53,13 +53,13 @@
                     </li>
 
                     <li>
-                        <a href="/chart"> <i class="menu-icon fa fa-bar-chart"></i>Chart </a>
+                        <a href="/chart"><i class="menu-icon fa fa-bar-chart"></i>Chart </a>
                     </li>
-
+                    
                     <li>
-                        <a href="/update"> <i class="menu-icon fa fa-cloud-upload"></i>Update ML Model</a>
+                        <a href="/update"><i class="menu-icon fa fa-cloud-upload"></i>Update </a>
                     </li>
-
+                    
                     <li>
                         <a href="/probability"><i class="menu-icon fa fa-line-chart"></i>Probability </a>
                     </li>
@@ -157,18 +157,8 @@
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="mb-3">Temperature </h4>
-                                <canvas id="temperature"></canvas>
-                            </div>
-                        </div>
-                    </div><!-- /# column -->
-                </div>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="mb-3">Activity Level</h4>
-                                <canvas id="activity"></canvas>
+                                <h4 class="mb-3">Probability </h4>
+                                <canvas id="probability"></canvas>
                             </div>
                         </div>
                     </div><!-- /# column -->
@@ -191,10 +181,7 @@
     <!-- <script src="static/assets/js/init-scripts/chart-js/chartjs-init.js"></script> -->
     <script type="text/javascript">
 
-        var temp1 = [ 0, 30, 10, 120, 50, 63, 10 ];
-        var temp2 = [ 0, 50, 40, 80, 40, 79, 120 ];
-        var activity1 = [ 0, 30, 10, 120, 50, 63, 10 ];
-        var activity2 = [ 0, 50, 40, 80, 40, 79, 120 ];
+        var prob = [ 0.1, 0.3, 0.1, 0.12, 0.5, 0.6, 0.1 ];
 
 
         // var form = $('#ajax-search');
@@ -218,8 +205,8 @@
         ( function ( $ ) {
             "use strict";
 
-            //temperature chart
-            var ctx = document.getElementById( "temperature" );
+            //probability chart
+            var ctx = document.getElementById( "probability" );
 
             var myChart = new Chart( ctx, {
                 type: 'line',
@@ -230,7 +217,7 @@
                     datasets: [
                     {
                         label: "With Drink Cycles",
-                        data: temp1,
+                        data: prob,
                         backgroundColor: 'transparent',
                         borderColor: 'rgba(220,53,69,0.75)',
                         borderWidth: 3,
@@ -238,18 +225,7 @@
                         pointRadius: 5,
                         pointBorderColor: 'transparent',
                         pointBackgroundColor: 'rgba(220,53,69,0.75)',
-                    }, 
-                    {
-                        label: "Without Drink Cycles",
-                        data: temp2,
-                        backgroundColor: 'transparent',
-                        borderColor: 'rgba(40,167,69,0.75)',
-                        borderWidth: 3,
-                        pointStyle: 'circle',
-                        pointRadius: 5,
-                        pointBorderColor: 'transparent',
-                        pointBackgroundColor: 'rgba(40,167,69,0.75)',
-                            } ]
+                    }]
                 },
                 options: {
                     responsive: true,
@@ -288,7 +264,7 @@
                             },
                             scaleLabel: {
                                 display: true,
-                                labelString: 'Index'
+                                labelString: 'Probability'
                             }
                                 } ]
                     },
@@ -299,90 +275,6 @@
                 }
             } );
 
-
-
-
-
-            //activity chart
-            var ctx = document.getElementById( "activity" );
-
-            var myChart = new Chart( ctx, {
-                type: 'line',
-                data: {
-                    labels: [ "1", "2", "3", "4", "5", "6", "7" ],
-                    type: 'line',
-                    defaultFontFamily: 'Montserrat',
-                    datasets: [
-                    {
-                        label: "Normal",
-                        data: activity1,
-                        backgroundColor: 'transparent',
-                        borderColor: 'rgba(220,53,69,0.75)',
-                        borderWidth: 3,
-                        pointStyle: 'circle',
-                        pointRadius: 5,
-                        pointBorderColor: 'transparent',
-                        pointBackgroundColor: 'rgba(220,53,69,0.75)',
-                    }, 
-                    {
-                        label: "Low Pass",
-                        data: activity2,
-                        backgroundColor: 'transparent',
-                        borderColor: 'rgba(40,167,69,0.75)',
-                        borderWidth: 3,
-                        pointStyle: 'circle',
-                        pointRadius: 5,
-                        pointBorderColor: 'transparent',
-                        pointBackgroundColor: 'rgba(40,167,69,0.75)',
-                            } ]
-                },
-                options: {
-                    responsive: true,
-
-                    tooltips: {
-                        mode: 'index',
-                        titleFontSize: 12,
-                        titleFontColor: '#000',
-                        bodyFontColor: '#000',
-                        backgroundColor: '#fff',
-                        titleFontFamily: 'Montserrat',
-                        bodyFontFamily: 'Montserrat',
-                        cornerRadius: 3,
-                        intersect: false,
-                    },
-                    legend: {
-                        display: false,
-                        labels: {
-                            usePointStyle: true,
-                            fontFamily: 'Montserrat',
-                        },
-                    },
-                    scales: {
-                        xAxes: [ {
-                            display: true,
-                            gridLines: {
-                                display: false,
-                                drawBorder: false
-                            }
-                                } ],
-                        yAxes: [ {
-                            display: true,
-                            gridLines: {
-                                display: false,
-                                drawBorder: false
-                            },
-                            scaleLabel: {
-                                display: true,
-                                labelString: 'Celsius'
-                            }
-                                } ]
-                    },
-                    title: {
-                        display: false,
-                        text: 'Normal Legend'
-                    }
-                }
-            } );
 
         } )( jQuery );  
     </script>

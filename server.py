@@ -82,36 +82,35 @@ timer = None
 @socketio.on('message')
 def test_emit(message):
     senddata()
-    timer = set_interval(senddata, 5)
 
 @socketio.on('connect', namespace='/chat')
 def test_connect():
     print('Client connected')
-
-@socketio.on('disconnect')
-def test_disconnect():
-    if timer is not None:
-        timer.cancel()
-    print('disconnected')
 
 #Serve Static Index page
 @app.route('/')
 def api_index():
     return send_from_directory('public', 'Cow_data.html')
 
-@app.route('/search_cow',methods=['GET'])
+@app.route('/search_cow', methods=['GET'])
 def searchCow():
     cowID=request.args.get('ID')
     print(cowID)
     data=db.search_cow_byID(int(cowID))
     return Response(json.dumps(data), mimetype='application/json')
 
-@app.route('/update_model',methods=['POST'])
+@app.route('/update_model', methods=['POST'])
 def updateModel():
     parameters = request.json
     msg = db.updateMLModel(parameters)
     # data=db.search_cow_byID(int(cowID))
     return Response(msg)
+
+@app.route('/update_labels', methods=['POST'])
+def updateLabel():
+    print('update_labels')
+    db.updateLabelByRids(request.json)
+    return Response(json.dumps("update_labels_success"), mimetype='application/json')
 
 
 #Serve Other Static Pages
@@ -135,6 +134,11 @@ def chartPage():
 # @flask_login.login_required
 def updatePage():
     return render_template('update.html')
+
+@app.route('/probability', methods=['GET', 'POST'])
+# @flask_login.login_required
+def probabilityPage():
+    return render_template('probability.html')
 
 # @app.route('/login', methods=['GET', 'POST'])
 # def login():

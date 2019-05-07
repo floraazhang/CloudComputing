@@ -46,19 +46,23 @@
             <div id="main-menu" class="main-menu collapse navbar-collapse">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="/"> <i class="menu-icon fa fa-dashboard"></i>Dashboard </a>
+                        <a href="/" onclick="return disconnect();"> <i class="menu-icon fa fa-dashboard"></i>Dashboard </a>
                     </li>
 
                     <li>
-                        <a href="/search"> <i class="menu-icon fa fa-search"></i>Search </a>
+                        <a href="/search" onclick="return disconnect();"> <i class="menu-icon fa fa-search"></i>Search </a>
                     </li>
 
                     <li>
-                        <a href="/chart"> <i class="menu-icon fa fa-bar-chart"></i>Chart </a>
+                        <a href="/chart" onclick="return disconnect();"> <i class="menu-icon fa fa-bar-chart"></i>Chart </a>
                     </li>
 
                     <li>
-                        <a href="/update"> <i class="menu-icon fa fa-cloud-upload"></i>Update ML Model</a>
+                        <a href="/update" onclick="return disconnect();"> <i class="menu-icon fa fa-cloud-upload"></i>Update ML Model</a>
+                    </li>
+
+                    <li>
+                        <a href="/probability" onclick="return disconnect();"><i class="menu-icon fa fa-line-chart"></i>Probability </a>
                     </li>
                     
                 </ul>
@@ -175,14 +179,11 @@
     <script type="text/javascript">
 
         var $ =jQuery.noConflict();
-        var socket = io.connect('http://' + document.domain + ':' + location.port);
+        var socket = io('http://' + document.domain + ':' + location.port);
 
         var callback = function(){
 
-            socket.on('connect',function(){
-                console.log("boxilai is connected!");
-                socket.emit('message',{'param': 'front-end connected'});
-            });
+            socket.emit('message',{'param': 'requestCowData'});
 
             socket.on('cow_data',function(data){
 
@@ -229,6 +230,8 @@
 
                 table.appendChild(thead);
                 table.appendChild(tbody);
+
+                setTimeout(function() {socket.emit('message',{'param': 'requestCowData'});}, 5000);
                         
             });
         };
@@ -241,6 +244,13 @@
         } else {
         document.addEventListener("DOMContentLoaded", callback);
         }
+
+        function disconnect() {
+            console.log('stopTimer');
+            socket.emit('stopTimer');
+            return true;
+        }
+
         $(document).ready(function() {
             
         });
