@@ -99,12 +99,23 @@ def searchCow():
     data=db.search_cow_byID(int(cowID))
     return Response(json.dumps(data), mimetype='application/json')
 
-@app.route('/update_model', methods=['POST'])
+
+@app.route('/plot_cow',methods=['GET'])
+def plotCow():
+    cowID=request.args.get('ID')
+    print(cowID)
+    data=db.search_cow_byID(int(cowID))
+    data=data[:24]
+    return Response(json.dumps(data), mimetype='application/json')
+
+
+
+@app.route('/update_model',methods=['POST'])
 def updateModel():
     parameters = request.json
     msg = db.updateMLModel(parameters)
     # data=db.search_cow_byID(int(cowID))
-    return Response(msg)
+    return Response(json.dumps(msg), mimetype='application/json')
 
 @app.route('/update_labels', methods=['POST'])
 def updateLabel():

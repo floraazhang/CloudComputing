@@ -183,35 +183,6 @@
                 </div>
             </div><!-- .animated -->
         </div><!-- .content -->
-
-        <div class="content mt-3" id='label_box'>
-            <div class="animated fadeIn">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <strong class="card-title">Update Label</strong>
-                            </div>
-                            <div class="card-body">
-                                <form id="update_label" method="post">
-                                    <div class="form-group col-lg-8">
-                                        <input id="new_label" name="cc-payment" type="text" class="form-control" aria-required="true" aria-invalid="false" value="0" required style='height:50px'>
-                                    </div>
-                                    
-
-                                    <div class="col-lg-4">
-                                        <button type="submit" class="btn btn-lg btn-info btn-block">
-                                            <span>Update</span>
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div> <!-- .card -->
-                    </div>
-                    <!--/.col-->
-                </div>
-            </div><!-- .animated -->
-        </div><!-- .content -->
     </div><!-- /#right-panel -->
     <!-- Right Panel -->
 
@@ -289,13 +260,10 @@
 
         $(document).ready(function() {
             var form = $('#ajax-search');
-            var box = $('#label_box');
             var update_label_btn = document.getElementById("update_label_btn");
-            $(box).hide();
             
             $(form).submit(function(){
                 event.preventDefault();
-                $(box).show();
 
                 console.log('111111111111111111111111111111111')
                 var formData = document.getElementById("ID").value;
@@ -337,8 +305,6 @@
                                 })
                             }
 
-
-                            $(box).hide();
                         }
                 });
 

@@ -131,7 +131,7 @@
                                 <strong class="card-title">Search by Cow ID</strong>
                             </div>
                             <div class="card-body">
-                                <form id="ajax-search" method="post">
+                                <form id="ajax-search" method="get">
                                     <div class="form-group col-lg-8">
                                         <input id="ID" name="cc-payment" type="text" class="form-control" aria-required="true" aria-invalid="false" value="88" required style='height:50px'>
                                     </div>
@@ -182,6 +182,7 @@
     <!-- Right Panel -->
 
 
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
     <script src="static/vendors/jquery/dist/jquery.min.js"></script>
     <script src="static/vendors/popper.js/dist/umd/popper.min.js"></script>
     <script src="static/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -191,31 +192,48 @@
     <!-- <script src="static/assets/js/init-scripts/chart-js/chartjs-init.js"></script> -->
     <script type="text/javascript">
 
-        var temp1 = [ 0, 30, 10, 120, 50, 63, 10 ];
-        var temp2 = [ 0, 50, 40, 80, 40, 79, 120 ];
-        var activity1 = [ 0, 30, 10, 120, 50, 63, 10 ];
-        var activity2 = [ 0, 50, 40, 80, 40, 79, 120 ];
+        var $ =jQuery.noConflict();
+
+        // var temp1 = [ 0, 30, 10, 120, 50, 63, 10 ];
+        // var temp2 = [ 0, 50, 40, 80, 40, 79, 120 ];
+        // var activity1 = [ 0, 30, 10, 120, 50, 63, 10 ];
+        // var activity2 = [ 0, 50, 40, 80, 40, 79, 120 ];
 
 
-        // var form = $('#ajax-search');
-        
-        // $(form).submit(function(){
 
-        //     var formData = $(form).serialize();
 
-        //     $.ajax({
-        //         type: 'POST',
-        //         url: '/search',
-        //         data: formData,
-        //         success:function(result){
-        //             if(result!=null){
+        var form = $('#ajax-search');
 
-        //             }
-        //         }
-        //     })
-        // });
+        $(form).submit(
+            function(){
+                event.preventDefault();
+                
+                var formData = document.getElementById("ID").value;
+                
+                $.get('/plot_cow', { ID: formData }, 
+                    (result) => {
+                        
 
-        ( function ( $ ) {
+                        var temp1=[];
+                        var temp2=[];
+                        var activity1=[];
+                        var activity2=[];
+                        var label=[];
+
+                        for(var i=0;i<result.length;i++)
+                            { 
+                                temp1.push(result[i].hour_temp);
+                                temp2.push(result[i].hour_temp_without_drink_cycles);
+                                activity1.push(result[i].activity);
+                                activity2.push(result[i].hour_low_pass_over_activity);
+                                label.push((i+1).toString());
+
+                                
+                            }
+                        
+
+
+                        ( function ( $ ) {
             "use strict";
 
             //temperature chart
@@ -224,7 +242,7 @@
             var myChart = new Chart( ctx, {
                 type: 'line',
                 data: {
-                    labels: [ "1", "2", "3", "4", "5", "6", "7" ],
+                    labels: label,
                     type: 'line',
                     defaultFontFamily: 'Montserrat',
                     datasets: [
@@ -288,7 +306,7 @@
                             },
                             scaleLabel: {
                                 display: true,
-                                labelString: 'Index'
+                                labelString: 'Celsius'
                             }
                                 } ]
                     },
@@ -309,7 +327,7 @@
             var myChart = new Chart( ctx, {
                 type: 'line',
                 data: {
-                    labels: [ "1", "2", "3", "4", "5", "6", "7" ],
+                    labels: label,
                     type: 'line',
                     defaultFontFamily: 'Montserrat',
                     datasets: [
@@ -373,7 +391,7 @@
                             },
                             scaleLabel: {
                                 display: true,
-                                labelString: 'Celsius'
+                                labelString: 'Index'
                             }
                                 } ]
                     },
@@ -384,7 +402,214 @@
                 }
             } );
 
-        } )( jQuery );  
+        } )( jQuery ); 
+
+
+
+
+
+
+
+
+
+                    }
+                );
+            });
+
+
+        
+
+
+
+
+        // var form = $('#ajax-search');
+        
+        // $(form).submit(function(){
+
+        //     var formData = $(form).serialize();
+
+        //     $.ajax({
+        //         type: 'POST',
+        //         url: '/search',
+        //         data: formData,
+        //         success:function(result){
+        //             if(result!=null){
+
+        //             }
+        //         }
+        //     })
+        // });
+
+        // ( function ( $ ) {
+        //     "use strict";
+
+        //     //temperature chart
+        //     var ctx = document.getElementById( "temperature" );
+
+        //     var myChart = new Chart( ctx, {
+        //         type: 'line',
+        //         data: {
+        //             labels: [ "1", "2", "3", "4", "5", "6", "7" ],
+        //             type: 'line',
+        //             defaultFontFamily: 'Montserrat',
+        //             datasets: [
+        //             {
+        //                 label: "With Drink Cycles",
+        //                 data: temp1,
+        //                 backgroundColor: 'transparent',
+        //                 borderColor: 'rgba(220,53,69,0.75)',
+        //                 borderWidth: 3,
+        //                 pointStyle: 'circle',
+        //                 pointRadius: 5,
+        //                 pointBorderColor: 'transparent',
+        //                 pointBackgroundColor: 'rgba(220,53,69,0.75)',
+        //             }, 
+        //             {
+        //                 label: "Without Drink Cycles",
+        //                 data: temp2,
+        //                 backgroundColor: 'transparent',
+        //                 borderColor: 'rgba(40,167,69,0.75)',
+        //                 borderWidth: 3,
+        //                 pointStyle: 'circle',
+        //                 pointRadius: 5,
+        //                 pointBorderColor: 'transparent',
+        //                 pointBackgroundColor: 'rgba(40,167,69,0.75)',
+        //                     } ]
+        //         },
+        //         options: {
+        //             responsive: true,
+
+        //             tooltips: {
+        //                 mode: 'index',
+        //                 titleFontSize: 12,
+        //                 titleFontColor: '#000',
+        //                 bodyFontColor: '#000',
+        //                 backgroundColor: '#fff',
+        //                 titleFontFamily: 'Montserrat',
+        //                 bodyFontFamily: 'Montserrat',
+        //                 cornerRadius: 3,
+        //                 intersect: false,
+        //             },
+        //             legend: {
+        //                 display: false,
+        //                 labels: {
+        //                     usePointStyle: true,
+        //                     fontFamily: 'Montserrat',
+        //                 },
+        //             },
+        //             scales: {
+        //                 xAxes: [ {
+        //                     display: true,
+        //                     gridLines: {
+        //                         display: false,
+        //                         drawBorder: false
+        //                     }
+        //                         } ],
+        //                 yAxes: [ {
+        //                     display: true,
+        //                     gridLines: {
+        //                         display: false,
+        //                         drawBorder: false
+        //                     },
+        //                     scaleLabel: {
+        //                         display: true,
+        //                         labelString: 'Index'
+        //                     }
+        //                         } ]
+        //             },
+        //             title: {
+        //                 display: false,
+        //                 text: 'Normal Legend'
+        //             }
+        //         }
+        //     } );
+
+
+
+
+
+        //     //activity chart
+        //     var ctx = document.getElementById( "activity" );
+
+        //     var myChart = new Chart( ctx, {
+        //         type: 'line',
+        //         data: {
+        //             labels: [ "1", "2", "3", "4", "5", "6", "7" ],
+        //             type: 'line',
+        //             defaultFontFamily: 'Montserrat',
+        //             datasets: [
+        //             {
+        //                 label: "Normal",
+        //                 data: activity1,
+        //                 backgroundColor: 'transparent',
+        //                 borderColor: 'rgba(220,53,69,0.75)',
+        //                 borderWidth: 3,
+        //                 pointStyle: 'circle',
+        //                 pointRadius: 5,
+        //                 pointBorderColor: 'transparent',
+        //                 pointBackgroundColor: 'rgba(220,53,69,0.75)',
+        //             }, 
+        //             {
+        //                 label: "Low Pass",
+        //                 data: activity2,
+        //                 backgroundColor: 'transparent',
+        //                 borderColor: 'rgba(40,167,69,0.75)',
+        //                 borderWidth: 3,
+        //                 pointStyle: 'circle',
+        //                 pointRadius: 5,
+        //                 pointBorderColor: 'transparent',
+        //                 pointBackgroundColor: 'rgba(40,167,69,0.75)',
+        //                     } ]
+        //         },
+        //         options: {
+        //             responsive: true,
+
+        //             tooltips: {
+        //                 mode: 'index',
+        //                 titleFontSize: 12,
+        //                 titleFontColor: '#000',
+        //                 bodyFontColor: '#000',
+        //                 backgroundColor: '#fff',
+        //                 titleFontFamily: 'Montserrat',
+        //                 bodyFontFamily: 'Montserrat',
+        //                 cornerRadius: 3,
+        //                 intersect: false,
+        //             },
+        //             legend: {
+        //                 display: false,
+        //                 labels: {
+        //                     usePointStyle: true,
+        //                     fontFamily: 'Montserrat',
+        //                 },
+        //             },
+        //             scales: {
+        //                 xAxes: [ {
+        //                     display: true,
+        //                     gridLines: {
+        //                         display: false,
+        //                         drawBorder: false
+        //                     }
+        //                         } ],
+        //                 yAxes: [ {
+        //                     display: true,
+        //                     gridLines: {
+        //                         display: false,
+        //                         drawBorder: false
+        //                     },
+        //                     scaleLabel: {
+        //                         display: true,
+        //                         labelString: 'Celsius'
+        //                     }
+        //                         } ]
+        //             },
+        //             title: {
+        //                 display: false,
+        //                 text: 'Normal Legend'
+        //             }
+        //         }
+        //     } );
+
+        // } )( jQuery );  
     </script>
 
 </body>
